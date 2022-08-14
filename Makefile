@@ -8,8 +8,8 @@ local: ## run local env
 
 .PHONY: lint
 lint: ## format all code
-	${SOURCE} isort main.py
-	${SOURCE} black main.py
+	${SOURCE} isort ./*.py
+	${SOURCE} black ./*.py
 
 .PHONY: install
 install: # install developer requirements
