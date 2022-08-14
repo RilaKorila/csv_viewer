@@ -27,3 +27,7 @@ activate: ## Activate a virtualenv
 .PHONY: off
 off: ## Deactivate a virtualenv
 	deactivate
+
+.PHONY: html
+html: ## Generate html file from csv
+	python3 parser.py

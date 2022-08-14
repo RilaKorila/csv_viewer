@@ -64,8 +64,8 @@ class Graph:
 
         return network
 
-    def to_html(self):
+    def to_html(self, fname="test.html"):
         network = self.to_network()
-        network.write_html("test.html")
+        network.write_html(fname)
 
         return network.html

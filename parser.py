@@ -1,3 +1,7 @@
+import csv
+import glob
+import re
+
 from graph import Cluster, Edge, Graph, Node
 
 
@@ -12,7 +16,7 @@ class Parser:
         """
         :returns: the set of Node
         """
-        for node_info in self.data[start: end]:
+        for node_info in self.data[start:end]:
             node = Node(*node_info)
             self.nodes.add(node)
 
@@ -20,7 +24,7 @@ class Parser:
         """
         :returns: the set of Edge
         """
-        for edge_info in self.data[start: end]:
+        for edge_info in self.data[start:end]:
             edge = Edge(*edge_info)
             self.edges.add(edge)
 
@@ -28,7 +32,7 @@ class Parser:
         """
         :returns: the set of Cluster
         """
-        cluster_data = self.data[start: ]
+        cluster_data = self.data[start:]
         for i in range(0, len(cluster_data), 2):
             id, x, y, r = cluster_data[i][0:4]
             children = cluster_data[i + 1][1:]
@@ -66,3 +70,25 @@ class Parser:
         self.get_cluster_info(NODE_NUM + EDGE_NUM + 3)
 
         return Graph(self.nodes, self.edges, self.clusters)
+
+
+if __name__ == "__main__":
+    csv_files = glob.glob("./result/csv_files/*")
+
+    for path in csv_files:
+        with open(path) as f:
+            reader = csv.reader(f)
+            data = [row for row in reader]
+
+            # get file name
+            ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
+            if ma is None:
+                print("Wrong File Path", f)
+                continue
+
+            # parse csv data
+            fname = "layout{0}-{1}.html".format(ma.group(1), ma.group(2))
+            html_path = "./result/html_files/" + fname
+
+            Parser(data).gen_graph().to_html(html_path)
+            print("Done: ", fname)
