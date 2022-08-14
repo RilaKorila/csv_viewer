@@ -4,10 +4,16 @@ from parser import Parser
 import streamlit as st
 import streamlit.components.v1 as components
 
+## constans
+GRAPH_MAX = 19
+GRAPH_MIN = 0
+GEN_MAX = 46
+GEN_MIN = 0
+
 ## sidebar
 with st.sidebar:
-    graph_no = st.number_input("グラフ番号", step=1, min_value=0, max_value=19)
-    gen_no = st.number_input("世代番号", step=1, min_value=0, max_value=46)
+    graph_no = st.number_input("グラフ番号", step=1, min_value=GRAPH_MIN, max_value=GRAPH_MAX)
+    gen_no = st.number_input("世代番号", step=1, min_value=GEN_MIN, max_value=GEN_MAX)
 
     st.markdown("----")
     st.write("グラフ番号: ", graph_no)
