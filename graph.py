@@ -34,14 +34,14 @@ class Graph:
         self.edges = edges
         self.clusters = clusters
 
-    def draw(self, size=1, zoom=100):
+    def to_network(self, size=2, zoom=200):
         """
         draw a graph with pyvis, and return a html file
         """
-        net = Network()
+        network = Network()
 
         for node in self.nodes:
-            net.add_node(
+            network.add_node(
                 node.id,
                 group=node.cluster_id,
                 borderWidth=0,
@@ -52,16 +52,20 @@ class Graph:
 
         for edge in self.edges:
             try:
-                net.add_edge(edge.node1, edge.node2, width=0.2)
+                network.add_edge(edge.node1, edge.node2, width=0.2)
             except AssertionError:
                 print(edge.node1, " と ", edge.node2)
                 continue
 
-        net.inherit_edge_colors(False)
-        net.toggle_drag_nodes(False)
-        net.toggle_physics(False)
-        net.toggle_stabilization(False)
+        network.inherit_edge_colors(False)
+        network.toggle_drag_nodes(False)
+        network.toggle_physics(False)
+        network.toggle_stabilization(False)
 
-        html_file = net.save_graph("test1.html")
+        return network
 
-        return html_file
+    def to_html(self):
+        network = self.to_network()
+        network.write_html("test.html")
+
+        return network.html
