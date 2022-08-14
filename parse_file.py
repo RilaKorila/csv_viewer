@@ -46,7 +46,7 @@ def parse_file(data):
         NODE_NUM = int(data[0][1])
     else:
         raise Exception("Wrong FileTemplate: NODE_NUM not found")
-    nodes = get_node_info(data[1:NODE_NUM])
+    nodes = get_node_info(data[1 : NODE_NUM + 1])
 
     # get edge info
     if data[NODE_NUM + 1][0] == "#edges":

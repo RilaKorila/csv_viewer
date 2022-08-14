@@ -11,7 +11,8 @@ class Node:
 
 
 class Edge:
-    def __init__(self, node1, node2):
+    def __init__(self, id, node1, node2):
+        self.id = int(id)
         self.node1 = int(node1)
         self.node2 = int(node2)
 
@@ -33,17 +34,34 @@ class Graph:
         self.edges = edges
         self.clusters = clusters
 
-    def draw(self, size=1, zoom=50):
+    def draw(self, size=1, zoom=100):
         """
         draw a graph with pyvis, and return a html file
         """
         net = Network()
 
         for node in self.nodes:
-            net.add_node(node.id, x=node.x * zoom, y=node.y * zoom, size=size)
+            net.add_node(
+                node.id,
+                group=node.cluster_id,
+                borderWidth=0,
+                x=node.x * zoom,
+                y=node.y * zoom,
+                size=size,
+            )
 
+        for edge in self.edges:
+            try:
+                net.add_edge(edge.node1, edge.node2, width=0.2)
+            except AssertionError:
+                print(edge.node1, " と ", edge.node2)
+                continue
+
+        net.inherit_edge_colors(False)
         net.toggle_drag_nodes(False)
         net.toggle_physics(False)
         net.toggle_stabilization(False)
 
-        net.show("test.html")
+        html_file = net.save_graph("test1.html")
+
+        return html_file
