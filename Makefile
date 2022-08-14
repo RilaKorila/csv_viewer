@@ -8,11 +8,11 @@ local: ## run local env
 
 .PHONY: lint
 lint: ## format all code
-	${SOURCE} isort .
-	${SOURCE} black .
+	${SOURCE} isort main.py
+	${SOURCE} black main.py
 
 .PHONY: install
-install: ## install developer requirements
+install: # install developer requirements
 	${SOURCE} pip3 install --upgrade pip
 	${SOURCE} pip3 install -r requirements.txt
 
