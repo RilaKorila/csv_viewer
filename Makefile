@@ -31,3 +31,9 @@ off: ## Deactivate a virtualenv
 .PHONY: html
 html: ## Generate html file from csv
 	python3 parser.py
+
+
+upload: ## Generate html file from csv
+	git add .
+	git commit -m "update files"
+	git push
