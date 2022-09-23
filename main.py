@@ -27,7 +27,7 @@ def each_graph():
     ## main contents
     st.title("Graph Viewer")
 
-    path = "./result/html_files/layout" + str(gen_no) + "-" + str(graph_no) + ".html"
+    path = "./files/html_files/layout" + str(gen_no) + "-" + str(graph_no) + ".html"
     with open(path) as f:
         _html = f.read()
         components.html(_html, height=800, width=800)
@@ -54,14 +54,14 @@ def compare():
 
     with left:
         st.markdown("### Initial Graph")
-        init_path = "./result/html_files/layout0-" + str(graph_no) + ".html"
+        init_path = "./files/html_files/layout0-" + str(graph_no) + ".html"
         with open(init_path) as f:
             _html = f.read()
             components.html(_html, height=800, width=800)
 
     with right:
         st.markdown("### Optimized Graph")
-        optimized_path = "./result/html_files/layout9-" + str(graph_no) + ".html"
+        optimized_path = "./files/html_files/layout9-" + str(graph_no) + ".html"
         with open(optimized_path) as f:
             _html = f.read()
             components.html(_html, height=800, width=800)
