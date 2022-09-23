@@ -1,5 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
+from PIL import Image
+
+## config
+st.set_page_config(layout="wide")
 
 ## constans
 GRAPH_MAX = 19
@@ -41,9 +45,13 @@ def compare():
 
     ## main contents
     st.title("Compare Graph")
+
+    image = Image.open("pareto.png")
+    st.image(image, caption="Pareto Front")
+
     # Initialグラフ と Optimizedグラフを横並びで表示
     left, right = st.columns(2)
-    
+
     with left:
         st.markdown("### Initial Graph")
         init_path = "./result/html_files/layout0-" + str(graph_no) + ".html"
