@@ -16,3 +16,4 @@ parser.py を実行し、csvファイルをhtmlに書き換える
 ### 3. streamlitを起動
 
 > make local
+# ayana
