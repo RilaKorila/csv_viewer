@@ -1,6 +1,6 @@
 import csv
 import glob
-import re
+import re, sys
 
 from graph import Cluster, Edge, Graph, Node
 
@@ -73,22 +73,44 @@ class Parser:
 
 
 if __name__ == "__main__":
-    csv_files = glob.glob("./result/csv_files/*")
+    args = sys.argv
+    
+    if len(args) == 1:
+        csv_files = glob.glob("./result/csv_files/*")
 
-    for path in csv_files:
+        for path in csv_files:
+            with open(path) as f:
+                reader = csv.reader(f)
+                data = [row for row in reader]
+
+                # get file name
+                ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
+                if ma is None:
+                    print("Wrong File Path", f)
+                    continue
+
+                # parse csv data
+                fname = "layout{0}-{1}.html".format(ma.group(1), ma.group(2))
+                html_path = "./result/html_files/" + fname
+
+                Parser(data).gen_graph().to_html(html_path)
+                print("Done: ", fname)
+
+    elif len(args) == 3:
+        # デバッグ用: 1つのcsvファイルを実行
+        path = "./result/csv_files/layout" + args[1] + "-" + args[2] + ".csv"
+        
         with open(path) as f:
             reader = csv.reader(f)
             data = [row for row in reader]
 
-            # get file name
-            ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
-            if ma is None:
-                print("Wrong File Path", f)
-                continue
-
             # parse csv data
-            fname = "layout{0}-{1}.html".format(ma.group(1), ma.group(2))
-            html_path = "./result/html_files/" + fname
+            fname = "layout{0}-{1}.html".format(args[1], args[2])
+            html_path = "./" + fname
 
             Parser(data).gen_graph().to_html(html_path)
             print("Done: ", fname)
+
+    else:
+        print("invalid argment: Plese input the following command")
+        print("python3 parse.py 世代番号 グラフ番号")

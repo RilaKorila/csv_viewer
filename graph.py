@@ -34,21 +34,27 @@ class Graph:
         self.edges = edges
         self.clusters = clusters
 
-    def to_network(self, size=2, zoom=200):
+    def to_network(self, size=2, zoom=500):
         """
         draw a graph with pyvis, and return a html file
         """
         network = Network()
+        metanodes = []
 
         for node in self.nodes:
             network.add_node(
                 node.id,
                 group=node.cluster_id,
+                label=str(node.cluster_id),
                 borderWidth=0,
                 x=node.x * zoom,
                 y=node.y * zoom,
                 size=size,
             )
+            metanodes.append(node.cluster_id)
+        
+        print("num node: ", len(metanodes))            
+        print("num meta-node: ", len(set(metanodes)))
 
         for edge in self.edges:
             try:
