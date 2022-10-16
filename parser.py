@@ -1,7 +1,9 @@
 import csv
 import glob
-import re, sys
+import re
+import sys
 
+from constants import CSV_PATH
 from graph import Cluster, Edge, Graph, Node
 
 
@@ -74,7 +76,7 @@ class Parser:
 
 if __name__ == "__main__":
     args = sys.argv
-    
+
     if len(args) == 1:
         csv_files = glob.glob("./result/csv_files/*")
 
@@ -98,8 +100,8 @@ if __name__ == "__main__":
 
     elif len(args) == 3:
         # デバッグ用: 1つのcsvファイルを実行
-        path = "./result/csv_files/layout" + args[1] + "-" + args[2] + ".csv"
-        
+        path = CSV_PATH + "layout" + args[1] + "-" + args[2] + ".csv"
+
         with open(path) as f:
             reader = csv.reader(f)
             data = [row for row in reader]
