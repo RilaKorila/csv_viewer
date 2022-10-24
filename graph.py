@@ -1,5 +1,7 @@
 from pyvis.network import Network
 
+from color import Color
+
 
 class Node:
     def __init__(self, id, x, y, cluster_id, caption=""):
@@ -40,20 +42,22 @@ class Graph:
         """
         network = Network()
         metanodes = []
+        color_dict = Color().color_dict
 
         for node in self.nodes:
             network.add_node(
                 node.id,
                 group=node.cluster_id,
-                label=str(node.cluster_id),
+                # label=str(node.cluster_id),
                 borderWidth=0,
                 x=node.x * zoom,
                 y=node.y * zoom,
+                color=color_dict[node.cluster_id],
                 size=size,
             )
             metanodes.append(node.cluster_id)
-        
-        print("num node: ", len(metanodes))            
+
+        print("num node: ", len(metanodes))
         print("num meta-node: ", len(set(metanodes)))
 
         for edge in self.edges:
