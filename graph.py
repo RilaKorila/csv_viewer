@@ -1,4 +1,5 @@
 from pyvis.network import Network
+from collections import deque
 
 from color import Color
 
@@ -73,6 +74,17 @@ class Graph:
         network.toggle_stabilization(False)
 
         return network
+    
+    def extract_connected_network(self, start_node):
+        que = deque()
+        
+        # start_node に隣接するnodeを全てqueに入れる
+        neighbors = []
+
+        # 
+        
+        def bfs
+        
 
     def to_html(self, fname="test.html"):
         network = self.to_network()
