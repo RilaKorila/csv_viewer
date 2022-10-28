@@ -75,6 +75,7 @@ class Graph:
 
         return network
     
+    # 特定のnodeから接続しているnodesを抽出する
     def extract_connected_network(self, start_node):
         que = deque()
         
@@ -82,7 +83,6 @@ class Graph:
         neighbors = []
 
         # 
-        
         def bfs
         
 
