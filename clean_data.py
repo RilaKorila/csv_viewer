@@ -1,6 +1,7 @@
 import csv
 import glob
 from collections import defaultdict, deque
+from math import sqrt
 from parser import Parser
 
 from pyvis.network import Network
@@ -10,9 +11,20 @@ class CleanData:
     def __init__(self, path):
         graph = Parser(path).gen_graph()
         self.network = graph.to_network()
+        self.old_nodes = graph.nodes
         self.adj_dir = self.network.get_adj_list()
         self.zoom = 500
         self.size = 2
+
+        # dict: old_node_id -> caption
+        self.caption_dict = {}
+        self.new_caption_dict = {}
+        self.get_caption_dict()
+
+    # 古いnode_idに対応するcaption_dictを取得
+    def get_caption_dict(self):
+        for n in self.old_nodes:
+            self.caption_dict[n.id] = n.caption
 
     # 特定のnodeから接続しているnodesを抽出する
     def extract_connected_network(self, start_node_id):
@@ -49,7 +61,10 @@ class CleanData:
         # add nodes to new network
         for new_id, old_id in enumerate(visited):
             node_id_converter[old_id] = new_id
+            self.new_caption_dict[new_id] = self.caption_dict[old_id]
             old_node = self.network.get_node(old_id)
+
+            # add new node to new network
             new_network.add_node(
                 n_id=new_id,
                 group=old_node["group"],
@@ -103,40 +118,75 @@ class CleanData:
 
             for node_id in nodes:
                 node = network.get_node(node_id)
-                meta_nodes[str(node["group"])].append(node["id"])
+                meta_nodes[str(node["group"])].append(node_id)
 
                 # node_id, x座標, y座標, meta-node_id, name
-                writer.writerow([node["id"], node["x"], node["y"], node["group"], ""])
+                writer.writerow(
+                    [
+                        node_id,
+                        node["x"],
+                        node["y"],
+                        node["group"],
+                        self.new_caption_dict[node_id],
+                    ]
+                )
 
             # edges info
             edges = network.get_edges()
             writer.writerow(["#edges", len(edges)])
 
-            for edge in edges:
-                # node1_id, node2_id, 本数
-                writer.writerow([edge["from"], edge["to"], ""])
+            for i, edge in enumerate(edges):
+                # edge_id, node1_id, node2_id
+                writer.writerow([str(i), edge["from"], edge["to"]])
 
             # clusters info
             writer.writerow(["#clusters", len(meta_nodes.keys())])
 
             for meta_node_id, (meta_node, children) in enumerate(meta_nodes.items()):
                 # id, x, y, r, children
-                info = self.calc_meta_node_info(network)
+                info = self.calc_meta_node_info(children, network)
                 x, y, r = info["x"], info["y"], info["r"]
                 meta_node_info = [meta_node_id, x, y, r]
                 meta_node_info.extend(children)
 
                 writer.writerow(meta_node_info)
 
-    def calc_meta_node_info(self, network):
+    def calc_meta_node_info(self, children, network, size=2):
         """
+        :params: meta_node_id(int): the id of the meta_node
+        :params: children(int): list of node(dict) which composes meta_node_id
         :return: dict{"x", "y", "r"}
         """
         info = {}
+        minx = 1.0e30
+        miny = 1.0e30
+        maxx = -1.0e30
+        maxy = -1.0e30
 
-        info["x"] = 0.0
-        info["y"] = 0.0
-        info["r"] = 0.0
+        if len(children) == 1:
+            # the meta node has only one node
+            info["x"] = network.get_node(children[0])["x"]
+            info["y"] = network.get_node(children[0])["y"]
+            # (TODO) 定数をConstants Classにして、sizeはそこからとる
+            # 今は、Craph.pyのto_networkメソッド内のデフォルト引数
+            info["r"] = size
+
+        else:
+            # メタノードの中で、最小のx、y を算出
+            for node_id in children:
+                node = network.get_node(node_id)
+                x = node["x"]
+                y = node["y"]
+                minx = minx if minx < x else x
+                miny = miny if miny < y else y
+                maxx = maxx if maxx > x else x
+                maxy = maxy if maxy > y else y
+
+            center_x = (maxx + minx) / 2.0
+            center_y = (maxy + miny) / 2.0
+            info["x"] = center_x
+            info["y"] = center_y
+            info["r"] = sqrt((maxx - center_x) ** 2 + (maxy - center_y) ** 2)
 
         return info
 
