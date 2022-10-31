@@ -25,7 +25,8 @@ class CleanData:
         while len(que) > 0:
             cur_id = que.pop()
             visited.add(cur_id)
-
+            # (TODO) 関数neighborsに変更
+            # https://pyvis.readthedocs.io/en/latest/documentation.html#pyvis.network.Network.neighbors
             neighbors = self.adj_dir[cur_id]
 
             for node in neighbors:
