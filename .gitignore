@@ -5,4 +5,5 @@ __pycache__/
 result/
 
 test.html
+test.csv
 constants.py

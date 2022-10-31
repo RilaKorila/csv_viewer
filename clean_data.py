@@ -1,7 +1,7 @@
+import csv
 import glob
-from collections import deque
+from collections import defaultdict, deque
 from parser import Parser
-from tokenize import group
 
 from pyvis.network import Network
 
@@ -83,10 +83,62 @@ class CleanData:
         new_network.toggle_physics(False)
         new_network.toggle_stabilization(False)
 
-        self.new_network = new_network
+        return new_network
 
     def to_html(self, network, fname="test.html"):
         network.write_html(fname)
+
+    def to_csv(self, network, fname="test.csv"):
+        """
+        convert pyvis.Network to csv files
+        """
+        meta_nodes = defaultdict(list)
+
+        with open(fname, "w") as f:
+            writer = csv.writer(f)
+
+            # nodes info
+            nodes = network.get_nodes()
+            writer.writerow(["#nodes", len(nodes)])
+
+            for node_id in nodes:
+                node = network.get_node(node_id)
+                meta_nodes[str(node["group"])].append(node["id"])
+
+                # node_id, x座標, y座標, meta-node_id, name
+                writer.writerow([node["id"], node["x"], node["y"], node["group"], ""])
+
+            # edges info
+            edges = network.get_edges()
+            writer.writerow(["#edges", len(edges)])
+
+            for edge in edges:
+                # node1_id, node2_id, 本数
+                writer.writerow([edge["from"], edge["to"], ""])
+
+            # clusters info
+            writer.writerow(["#clusters", len(meta_nodes.keys())])
+
+            for meta_node_id, (meta_node, children) in enumerate(meta_nodes.items()):
+                # id, x, y, r, children
+                info = self.calc_meta_node_info(network)
+                x, y, r = info["x"], info["y"], info["r"]
+                meta_node_info = [meta_node_id, x, y, r]
+                meta_node_info.extend(children)
+
+                writer.writerow(meta_node_info)
+
+    def calc_meta_node_info(self, network):
+        """
+        :return: dict{"x", "y", "r"}
+        """
+        info = {}
+
+        info["x"] = 0.0
+        info["y"] = 0.0
+        info["r"] = 0.0
+
+        return info
 
 
 if __name__ == "__main__":
@@ -98,4 +150,6 @@ if __name__ == "__main__":
     path = "./result/csv_files/layout0-0.csv"
     clean_data = CleanData(path)
     visited = clean_data.extract_connected_network(1)
-    clean_data.create_cleaned_network(visited)
+    new_network = clean_data.create_cleaned_network(visited)
+
+    clean_data.to_csv(new_network)
