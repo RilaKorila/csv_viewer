@@ -21,10 +21,24 @@ class CleanData:
         self.new_caption_dict = {}
         self.get_caption_dict()
 
+        self.vector_dict = {}
+        self.get_voctor_info()
+
     # 古いnode_idに対応するcaption_dictを取得
     def get_caption_dict(self):
         for n in self.old_nodes:
             self.caption_dict[n.id] = n.caption
+
+    # NBAF_Coauthorship_12dim.csv の #vector 情報をgetする
+    def get_voctor_info(self, fname="./original_data/vector.csv"):
+
+        with open(fname, "r") as f:
+            reader = csv.reader(f)
+            data = [row for row in reader]
+            for row in data[1:]:
+                node_id = row[0]
+                other_info = row[1:]
+                self.vector_dict[int(node_id)] = other_info
 
     # 特定のnodeから接続しているnodesを抽出する
     def extract_connected_network(self, start_node_id):
@@ -56,11 +70,13 @@ class CleanData:
         """
         new_network = Network()
         nodes = []
-        node_id_converter = {}
+        self.node_id_converter_old_to_new = {}
+        self.node_id_converter_new_to_old = {}
 
         # add nodes to new network
         for new_id, old_id in enumerate(visited):
-            node_id_converter[old_id] = new_id
+            self.node_id_converter_old_to_new[old_id] = new_id
+            self.node_id_converter_new_to_old[new_id] = old_id
             self.new_caption_dict[new_id] = self.caption_dict[old_id]
             old_node = self.network.get_node(old_id)
 
@@ -85,8 +101,8 @@ class CleanData:
         for edge in edges:
             try:
                 if edge["from"] in visited or edge["to"] in visited:
-                    node_1 = node_id_converter[edge["from"]]
-                    node_2 = node_id_converter[edge["to"]]
+                    node_1 = self.node_id_converter_old_to_new[edge["from"]]
+                    node_2 = self.node_id_converter_old_to_new[edge["to"]]
                     new_network.add_edge(node_1, node_2, width=0.2)
 
             except AssertionError:
@@ -190,6 +206,51 @@ class CleanData:
 
         return info
 
+    def to_input_csv(self, network, fname="cleaned.csv"):
+        meta_nodes = defaultdict(list)
+
+        # write new network on a new csv file
+        with open(fname, "w") as f:
+            writer = csv.writer(f)
+
+            # connectivity
+            nodes = network.get_nodes()
+            writer.writerow(["#connectivity"])
+
+            for new_node_id in nodes:
+                node = network.get_node(new_node_id)
+                children = network.neighbors(new_node_id)
+                meta_nodes[str(node["group"])].append(new_node_id)
+
+                # new_node_id, name, childrenのnew_node_id
+                line = [new_node_id, self.new_caption_dict[new_node_id]]
+                line.extend(children)
+                writer.writerow(line)
+
+            # vector
+            writer.writerow(
+                [
+                    "#vector",
+                    "genetic",
+                    "molecular",
+                    "loci",
+                    "microsatellites",
+                    "isolation",
+                    "inbreeding",
+                    "transcriptomics",
+                    "expression",
+                    "bacterial",
+                    "breeding",
+                    "polymorphic",
+                ]
+            )
+            for new_node_id in nodes:
+                node = network.get_node(new_node_id)
+                old_node_id = self.node_id_converter_new_to_old[new_node_id]
+                line = [new_node_id]
+                line.extend(self.vector_dict[old_node_id])
+                writer.writerow(line)
+
 
 if __name__ == "__main__":
     # csv_files = glob.glob("./result/csv_files/*")
@@ -202,4 +263,4 @@ if __name__ == "__main__":
     visited = clean_data.extract_connected_network(1)
     new_network = clean_data.create_cleaned_network(visited)
 
-    clean_data.to_csv(new_network)
+    clean_data.to_input_csv(new_network)

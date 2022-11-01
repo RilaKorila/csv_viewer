@@ -6,4 +6,6 @@ result/
 
 test.html
 test.csv
+cleaned.csv
+original_data/*
 constants.py
