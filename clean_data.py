@@ -223,9 +223,9 @@ class CleanData:
                 meta_nodes[str(node["group"])].append(new_node_id)
 
                 # new_node_id, name, childrenのnew_node_id
-                line = [new_node_id, self.new_caption_dict[new_node_id]]
-                line.extend(children)
-                writer.writerow(line)
+                writer.writerow([new_node_id, self.new_caption_dict[new_node_id]])
+                writer.writerow(children)
+                writer.writerow([])
 
             # vector
             writer.writerow(
@@ -263,4 +263,5 @@ if __name__ == "__main__":
     visited = clean_data.extract_connected_network(1)
     new_network = clean_data.create_cleaned_network(visited)
 
+    clean_data.to_html(new_network)
     clean_data.to_input_csv(new_network)
