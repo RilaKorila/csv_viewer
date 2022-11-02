@@ -84,38 +84,43 @@ class Parser:
 if __name__ == "__main__":
     args = sys.argv
 
-    try:
-        if len(args) == 1:
-            csv_files = glob.glob("./result/csv_files/*")
-
-            for path in csv_files:
-                _parser = Parser(path)
-
-                # get file name
-                ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
-                if ma is None:
-                    print("Wrong File Path", f)
-                    continue
-
-                # parse csv data
-                fname = "layout{0}-{1}.html".format(ma.group(1), ma.group(2))
-                html_path = "./result/html_files/" + fname
-
-        elif len(args) == 3:
-            # デバッグ用: 1つのcsvファイルを実行
-            path = CSV_PATH + "layout" + args[1] + "-" + args[2] + ".csv"
+    # try:
+    if len(args) == 1:
+        csv_files = glob.glob("./result/csv_files/*")
+        
+        for path in csv_files:
             _parser = Parser(path)
 
-            # parse csv data
-            fname = "layout{0}-{1}.html".format(args[1], args[2])
-            html_path = "./" + fname
+            # get file name
+            ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
+            if ma is None:
+                print("Wrong File Path", fname)
+                continue
 
-        else:
-            raise Exception("WrongArgs")
+            # parse csv data
+            fname = "layout{0}-{1}.html".format(ma.group(1), ma.group(2))
+            html_path = "./result/html_files/" + fname
+
+            _parser.gen_graph().to_html(html_path)
+            print("Done: ", fname)
+
+    elif len(args) == 3:
+        # デバッグ用: 1つのcsvファイルを実行
+        path = "./result/csv_files/" + "layout" + args[1] + "-" + args[2] + ".csv"
+        _parser = Parser(path)
+
+        # parse csv data
+        fname = "layout{0}-{1}.html".format(args[1], args[2])
+        html_path = "./" + fname
 
         _parser.gen_graph().to_html(html_path)
         print("Done: ", fname)
 
-    except Exception:
-        print("invalid argment: Plese input the following command")
-        print("python3 parse.py 世代番号 グラフ番号")
+    else:
+        raise Exception("WrongArgs")
+
+        
+
+    # except Exception:
+    #     print("invalid argment: Plese input the following command")
+    #     print("python3 parse.py 世代番号 グラフ番号")
