@@ -40,7 +40,7 @@ class Graph:
         """
         draw a graph with pyvis, and return a html file
         """
-        network = Network()
+        network = Network(height="700px", width="700px")
         metanodes = []
         color_dict = Color().color_dict
 
@@ -54,9 +54,11 @@ class Graph:
                 y=node.y * zoom,
                 color=color_dict[node.cluster_id],
                 size=size,
+                physics=False
             )
             metanodes.append(node.cluster_id)
-
+        network.add_node(9999, x=0.0, y=0.0, color="black", shape="box")
+        
         print("num node: ", len(metanodes))
         print("num meta-node: ", len(set(metanodes)))
 
