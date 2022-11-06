@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # try:
     if len(args) == 1:
         csv_files = glob.glob("./result/csv_files/*")
-        
+
         for path in csv_files:
             _parser = Parser(path)
 
@@ -118,8 +118,6 @@ if __name__ == "__main__":
 
     else:
         raise Exception("WrongArgs")
-
-        
 
     # except Exception:
     #     print("invalid argment: Plese input the following command")
