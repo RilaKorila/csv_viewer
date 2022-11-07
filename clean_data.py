@@ -253,11 +253,6 @@ class CleanData:
 
 
 if __name__ == "__main__":
-    # csv_files = glob.glob("./result/csv_files/*")
-
-    # for path in csv_files:
-    #     clean_data = CleanData(path)
-
     path = "./result/csv_files/layout0-0.csv"
     clean_data = CleanData(path)
     visited = clean_data.extract_connected_network(1)
