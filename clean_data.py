@@ -231,7 +231,8 @@ class CleanData:
 
                 # new_node_id, name, childrenのnew_node_id
                 writer.writerow([new_node_id, self.new_caption_dict[new_node_id]])
-                writer.writerow(children)
+                _children = list(filter(lambda x: x > new_node_id, children))
+                writer.writerow(_children)
                 writer.writerow([])
 
             # vector
