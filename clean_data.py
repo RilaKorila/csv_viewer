@@ -150,11 +150,18 @@ class CleanData:
             # edges info
             edges = network.get_edges()
             writer.writerow(["#edges", len(edges)])
+            counter, all_counter = 0, 0
 
             for i, edge in enumerate(edges):
                 # edge_id, node1_id, node2_id
-                writer.writerow([str(i), edge["from"], edge["to"]])
+                _from, _to = edge["from"], edge["to"]
+                all_counter += 1
+                if _from < _to:
+                    counter += 1
+                    writer.writerow([str(i), _from, _to])
 
+            print("counter: ", counter)
+            print("all_counter: ", all_counter)
             # clusters info
             writer.writerow(["#clusters", len(meta_nodes.keys())])
 
