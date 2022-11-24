@@ -9,7 +9,7 @@ class Color:
     """
 
     # デフォルトで300色用意
-    def __init__(self, num_colors=300):
+    def __init__(self, num_colors=700):
         self.num_colors = num_colors
         self.color_dict = {}
         self.make_color_dict()
