@@ -11,6 +11,25 @@ GRAPH_MIN = 0
 GEN_MAX = 9
 GEN_MIN = 0
 
+## cache html data
+@st.cache
+def get_html_files():
+    intial = {}
+    optimized = {}
+
+    # get intial graph html files
+    for graph_no in range(20):
+        path = "./files/html_files/layout0-" + str(graph_no) + ".html"
+        with open(path) as f:
+            intial[graph_no] = f.read()
+
+        path = "./files/html_files/layout9-" + str(graph_no) + ".html"
+        with open(path) as f:
+            optimized[graph_no] = f.read()
+
+    return intial, optimized
+
+intial_graph_d, optimized_graph_d = get_html_files()
 
 def each_graph():
     ## sidebar
@@ -54,17 +73,11 @@ def compare():
 
     with left:
         st.markdown("### Initial Graph")
-        init_path = "./files/html_files/layout0-" + str(graph_no) + ".html"
-        with open(init_path) as f:
-            _html = f.read()
-            components.html(_html, height=800, width=800)
+        components.html(intial_graph_d[graph_no], height=800, width=800)
 
     with right:
         st.markdown("### Optimized Graph")
-        optimized_path = "./files/html_files/layout9-" + str(graph_no) + ".html"
-        with open(optimized_path) as f:
-            _html = f.read()
-            components.html(_html, height=800, width=800)
+        components.html(optimized_graph_d[graph_no], height=800, width=800)
 
 
 def show_all():
@@ -77,17 +90,11 @@ def show_all():
 
         with graphs[i]:
             st.markdown("### Graph" + str(i))
-            init_path = "./files/html_files/layout9-" + str(i) + ".html"
-            with open(init_path) as f:
-                _html = f.read()
-                components.html(_html, height=700, width=700)
+            components.html(optimized_graph_d[i], height=800, width=800)
 
         with graphs[i + 1]:
             st.markdown("### Graph" + str(i + 1))
-            init_path = "./files/html_files/layout9-" + str(i + 1) + ".html"
-            with open(init_path) as f:
-                _html = f.read()
-                components.html(_html, height=700, width=700)
+            components.html(optimized_graph_d[i + 1], height=800, width=800)
 
 
 def main():
