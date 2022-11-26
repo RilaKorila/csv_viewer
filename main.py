@@ -67,16 +67,41 @@ def compare():
             components.html(_html, height=800, width=800)
 
 
+def show_all():
+    st.title("Showh All Optimized Graph")
+    graphs = [None for i in range(20)]
+
+    # 2つずつ横並びで表示
+    for i in range(0, 19, 2):
+        graphs[i], graphs[i + 1] = st.columns(2)
+
+        with graphs[i]:
+            st.markdown("### Graph" + str(i))
+            init_path = "./files/html_files/layout9-" + str(i) + ".html"
+            with open(init_path) as f:
+                _html = f.read()
+                components.html(_html, height=700, width=700)
+
+        with graphs[i + 1]:
+            st.markdown("### Graph" + str(i + 1))
+            init_path = "./files/html_files/layout9-" + str(i + 1) + ".html"
+            with open(init_path) as f:
+                _html = f.read()
+                components.html(_html, height=700, width=700)
+
+
 def main():
     st.sidebar.markdown("## ページ切り替え")
     ## menuを選択
-    menu = st.sidebar.radio("メニュー", ("each graph", "compare"))
+    menu = st.sidebar.radio("メニュー", ("each graph", "compare", "show all"))
 
     # --- page振り分け
     if menu == "each graph":
         each_graph()
-    else:
+    elif menu == "compare":
         compare()
+    else:
+        show_all()
 
 
 ## メイン
