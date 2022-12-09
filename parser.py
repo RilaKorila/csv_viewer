@@ -7,7 +7,7 @@ from constants import CSV_PATH
 from graph import Cluster, Edge, Graph, Node
 
 
-class Parser:
+class GraphParser:
     def __init__(self, path):
         self.data = self.read_csv(path)
         self.nodes = set()
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         csv_files = glob.glob("./result/csv_files/*")
 
         for path in csv_files:
-            _parser = Parser(path)
+            _parser = GraphParser(path)
 
             # get file name
             ma = re.search(r"layout([0-9]+)-([0-9]+)\.csv", path)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     elif len(args) == 3:
         # デバッグ用: 1つのcsvファイルを実行
         path = "./result/csv_files/" + "layout" + args[1] + "-" + args[2] + ".csv"
-        _parser = Parser(path)
+        _parser = GraphParser(path)
 
         # parse csv data
         fname = "layout{0}-{1}.html".format(args[1], args[2])

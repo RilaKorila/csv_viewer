@@ -2,14 +2,14 @@ import csv
 import glob
 from collections import defaultdict, deque
 from math import sqrt
-from parser import Parser
+from parser import GraphParser
 
 from pyvis.network import Network
 
 
 class CleanData:
     def __init__(self, path):
-        graph = Parser(path).gen_graph()
+        graph = GraphParser(path).gen_graph()
         self.network = graph.to_network()
         self.old_nodes = graph.nodes
         self.adj_dir = self.network.get_adj_list()
