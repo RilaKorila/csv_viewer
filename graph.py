@@ -57,7 +57,9 @@ class Graph:
                 physics=False,
             )
             metanodes.append(node.cluster_id)
-        network.add_node(9999, x=0.0, y=0.0, color="black", shape="box")
+
+        # サイズ確認用の指標node
+        # network.add_node(9999, x=0.0, y=0.0, color="black", shape="box")
 
         print("num node: ", len(metanodes))
         print("num meta-node: ", len(set(metanodes)))
