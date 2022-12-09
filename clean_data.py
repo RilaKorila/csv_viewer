@@ -2,7 +2,7 @@ import csv
 import glob
 from collections import defaultdict, deque
 from math import sqrt
-from parser import GraphParser
+from graphParser import GraphParser
 
 from pyvis.network import Network
 
