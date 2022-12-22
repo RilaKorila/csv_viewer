@@ -30,7 +30,7 @@ off: ## Deactivate a virtualenv
 
 .PHONY: html
 html: ## Generate html file from csv
-	python3 parser.py
+	python3 graphParser.py
 
 
 upload: ## Generate html file from csv
