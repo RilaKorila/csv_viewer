@@ -87,7 +87,6 @@ if __name__ == "__main__":
     # try:
     if len(args) == 1:
         csv_files = glob.glob("./result/csv_files/*")
-        print(csv_files)
 
         for path in csv_files:
             _parser = GraphParser(path)
