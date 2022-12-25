@@ -2,9 +2,10 @@ import csv
 import glob
 from collections import defaultdict, deque
 from math import sqrt
-from graphParser import GraphParser
 
 from pyvis.network import Network
+
+from graphParser import GraphParser
 
 
 class CleanData:
