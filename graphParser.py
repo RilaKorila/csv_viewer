@@ -104,17 +104,15 @@ if __name__ == "__main__":
             _parser.gen_graph().to_html(html_path)
             print("Done: ", fname)
 
-    elif len(args) == 3:
+    elif len(args) == 2:
         # デバッグ用: 1つのcsvファイルを実行
-        path = "./result/csv_files/" + "layout" + args[1] + "-" + args[2] + ".csv"
+        path = args[1]
         _parser = GraphParser(path)
 
         # parse csv data
-        fname = "layout{0}-{1}.html".format(args[1], args[2])
-        html_path = "./" + fname
-
+        html_path = "./test.html"
         _parser.gen_graph().to_html(html_path)
-        print("Done: ", fname)
+        print("Done")
 
     else:
         raise Exception("WrongArgs")
