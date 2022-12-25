@@ -13,23 +13,25 @@ GEN_MIN = 0
 
 ## cache html data
 @st.cache
-def get_html_files():
+def get_html_files(html_dir_name):
     intial = {}
     optimized = {}
 
     # get intial graph html files
     for graph_no in range(20):
-        path = "./files/html_files/layout0-" + str(graph_no) + ".html"
+        path = "./files/" + html_dir_name + "/layout0-" + str(graph_no) + ".html"
         with open(path) as f:
             intial[graph_no] = f.read()
 
-        path = "./files/html_files/layout9-" + str(graph_no) + ".html"
+        path = "./files/" + html_dir_name + "/layout9-" + str(graph_no) + ".html"
         with open(path) as f:
             optimized[graph_no] = f.read()
 
     return intial, optimized
 
-intial_graph_d, optimized_graph_d = get_html_files()
+
+intial_graph_d, optimized_graph_d = get_html_files("html_files")
+
 
 def each_graph():
     ## sidebar
@@ -80,8 +82,12 @@ def compare():
         components.html(optimized_graph_d[graph_no], height=800, width=800)
 
 
-def show_all():
-    st.title("Showh All Optimized Graph")
+def show_all(graph_d, isOptimized):
+    if isOptimized:
+        st.title("Show All Optimized Graph")
+    else:
+        st.title("Show All Initial Graph")
+
     graphs = [None for i in range(20)]
 
     # 2つずつ横並びで表示
@@ -90,25 +96,29 @@ def show_all():
 
         with graphs[i]:
             st.markdown("### Graph" + str(i))
-            components.html(optimized_graph_d[i], height=800, width=800)
+            components.html(graph_d[i], height=800, width=800)
 
         with graphs[i + 1]:
             st.markdown("### Graph" + str(i + 1))
-            components.html(optimized_graph_d[i + 1], height=800, width=800)
+            components.html(graph_d[i + 1], height=800, width=800)
 
 
 def main():
     st.sidebar.markdown("## ページ切り替え")
     ## menuを選択
-    menu = st.sidebar.radio("メニュー", ("each graph", "compare", "show all"))
+    menu = st.sidebar.radio(
+        "メニュー", ("each graph", "compare", "show all (optim)", "show all (init)")
+    )
 
     # --- page振り分け
     if menu == "each graph":
         each_graph()
     elif menu == "compare":
         compare()
+    elif menu == "show all":
+        show_all(optimized_graph_d, isOptimized=True)
     else:
-        show_all()
+        show_all(intial_graph_d, isOptimized=False)
 
 
 ## メイン
